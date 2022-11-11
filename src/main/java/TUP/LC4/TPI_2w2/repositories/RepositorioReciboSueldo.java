@@ -4,18 +4,19 @@
  */
 package TUP.LC4.TPI_2w2.repositories;
 
-
 import TUP.LC4.TPI_2w2.models.Empleado;
-import javax.persistence.EntityManager;
+import TUP.LC4.TPI_2w2.models.ReciboSueldo;
 import org.springframework.stereotype.Repository;
 import javax.persistence.PersistenceContext;
+import javax.persistence.EntityManager;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 /**
  *
- * @author Iñaki
+ * @author ortiz
  */
 @Repository
-public interface RepositorioEmpleados extends JpaRepository<Empleado, Integer>{
-    Empleado findEmpleadoByLegajo(int legajo);
+public interface RepositorioReciboSueldo extends JpaRepository<ReciboSueldo, Integer>{
+    
 }
