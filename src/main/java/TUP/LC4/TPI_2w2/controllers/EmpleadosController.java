@@ -18,5 +18,5 @@ public class EmpleadosController {
     @Autowired
     
     private RepositorioEmpleados repo;
-    
+       
 }

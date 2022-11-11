@@ -5,16 +5,18 @@
 package TUP.LC4.TPI_2w2.repositories;
 
 
+import TUP.LC4.TPI_2w2.models.Empleado;
 import javax.persistence.EntityManager;
 import org.springframework.stereotype.Repository;
 import javax.persistence.PersistenceContext;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  *
  * @author Iñaki
  */
 @Repository
-public class RepositorioEmpleados {
-    @PersistenceContext
-    private EntityManager manager;   
+public interface RepositorioEmpleados extends JpaRepository<Empleado, Integer>{
+    
+    
 }
