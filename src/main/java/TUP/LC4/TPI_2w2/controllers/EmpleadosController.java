@@ -4,7 +4,9 @@
  */
 package TUP.LC4.TPI_2w2.controllers;
 
+import TUP.LC4.TPI_2w2.commands.PostEmpleado;
 import TUP.LC4.TPI_2w2.models.Empleado;
+import TUP.LC4.TPI_2w2.repositories.RepositorioAreas;
 import TUP.LC4.TPI_2w2.repositories.RepositorioEmpleados;
 import TUP.LC4.TPI_2w2.resultados.ResultadoBase;
 import java.util.List;
@@ -13,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,16 +29,18 @@ import org.springframework.web.bind.annotation.RestController;
 public class EmpleadosController {
     
     @Autowired
-    private RepositorioEmpleados repo;
+    private RepositorioEmpleados repoEmpleado;
+    private RepositorioAreas repoArea;
+    
     
     @GetMapping("/getEmpleados")
     public ResponseEntity<List<Empleado>> getEmpleados(){
-        return ResponseEntity.ok(repo.getEmpleados());
+        return ResponseEntity.ok(repoEmpleado.getEmpleados());
     }
     
     @GetMapping("/getEmpleadoByLegajo/{legajo}")
     public ResponseEntity<ResultadoBase> getEmpleadoByLegajo(@PathVariable int legajo){
-        ResultadoBase resultado =  repo.findEmpleadoByLegajo(legajo);
+        ResultadoBase resultado =  repoEmpleado.findEmpleadoByLegajo(legajo);
         
         if (resultado.code == 200) {
                return new ResponseEntity(resultado, HttpStatus.OK);    
@@ -46,4 +52,27 @@ public class EmpleadosController {
              return new ResponseEntity(resultado, HttpStatus.BAD_REQUEST);
         }
     }
+    
+    @PostMapping("/postEmpleado")
+    public ResponseEntity<ResultadoBase> postEmpleado(@RequestBody PostEmpleado comando){
+        ResultadoBase resultado =  new ResultadoBase();
+        
+        resultado = repoArea.getAreaById(comando.id_area);
+        
+        if (resultado.code == 200) {
+            
+            resultado = repoEmpleado.postEmpleado(comando);
+            
+            if(resultado.code == 200){
+                
+                  return new ResponseEntity(resultado, HttpStatus.OK);    
+            }
+            else{
+                    return new ResponseEntity(resultado, HttpStatus.BAD_REQUEST);
+            }
+        }
+        else{
+             return new ResponseEntity(resultado, HttpStatus.BAD_REQUEST);
+        }
+    } 
 }

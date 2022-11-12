@@ -69,14 +69,60 @@ public class RepositorioAreas {
             if (resultSet.next()) {
                 area = new Area(resultSet.getInt("id_area"), resultSet.getString("descripcion"));
             }
+            
+            if (area != null) {
+                result.message = "Area encontrada.";
+                result.code = 200;
+                result.resultado = area;
+                
+            } else {
+                result.message = "Area no encontrada.";
+                result.code = 400;
+                result.resultado = area;
+            }
+
+            pst.close();
+            mySqlConn.close();
+        } catch (SQLException ex) {
+            result.code = 500;
+            result.message = ex.getMessage();
+            result.resultado = null;
+        }
+
+        return result;
+    }
+    
+    
+    public ResultadoBase getAreaById(int  id) {
+        ResultadoBase result = new ResultadoBase();
+        Area area = null;
+
+        try {
+            Connection mySqlConn = DriverManager.getConnection(url, "springboot123", "UtnFrc2022");
+
+            PreparedStatement pst = mySqlConn.prepareStatement("select a.id_area, \n"
+                    + "a.descripcion \n"
+                    + "from area a \n"
+                    + "where LOWER(a.id_area) = ?");
+
+            pst.setInt(1, id);
+            ResultSet resultSet = pst.executeQuery();
+
+            if (resultSet.next()) {
+                area = new Area(resultSet.getInt("id_area"), resultSet.getString("descripcion"));
+            }
 
             result.code = 200;
             result.resultado = area;
             
             if (area != null) {
                 result.message = "Area encontrada.";
+                result.code = 200;
+                result.resultado = area;
             } else {
                 result.message = "Area no encontrada.";
+                result.code = 400;
+                result.resultado = area;
             }
 
             pst.close();

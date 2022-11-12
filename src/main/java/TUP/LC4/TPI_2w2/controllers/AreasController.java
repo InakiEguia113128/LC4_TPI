@@ -48,12 +48,24 @@ public class AreasController {
     @GetMapping("/getAreaByDescripcion/{descripcion}")
     public ResponseEntity<ResultadoBase> getAreaByDescripcion(@PathVariable String descripcion) {
         var resultado = repo.getAreaByDescripcion(descripcion);
+       if (resultado.code == 200) {
+            return new ResponseEntity(resultado, HttpStatus.OK);
+
+        } else if (resultado.code == 400) {
+            return new ResponseEntity(resultado, HttpStatus.BAD_REQUEST);
+        } else {
+            return new ResponseEntity(resultado, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/getAreaById/{id}")
+    public ResponseEntity<ResultadoBase> getAreaByDescripcion(@PathVariable int id) {
+        var resultado = repo.getAreaById(id);
         if (resultado.code == 200) {
-            if (resultado.resultado != null) {
-                return new ResponseEntity(resultado, HttpStatus.OK);
-            } else {
-                return new ResponseEntity(resultado, HttpStatus.BAD_REQUEST);
-            }
+            return new ResponseEntity(resultado, HttpStatus.OK);
+
+        } else if (resultado.code == 400) {
+            return new ResponseEntity(resultado, HttpStatus.BAD_REQUEST);
         } else {
             return new ResponseEntity(resultado, HttpStatus.INTERNAL_SERVER_ERROR);
         }

@@ -5,6 +5,7 @@
 package TUP.LC4.TPI_2w2.repositories;
 
 
+import TUP.LC4.TPI_2w2.commands.PostEmpleado;
 import TUP.LC4.TPI_2w2.models.Empleado;
 import TUP.LC4.TPI_2w2.resultados.ResultadoBase;
 import java.sql.Connection;
@@ -109,6 +110,47 @@ public class RepositorioEmpleados {
               resultado.setCode(500);
               resultado.setMessage(ex.getMessage());
               resultado.resultado  = null; 
+              
+              return resultado;
+        }
+    }
+    
+    
+     public ResultadoBase  postEmpleado(PostEmpleado empleado){
+          ResultadoBase resultado =  new ResultadoBase();
+        try{
+       
+            mySqlConn = DriverManager.getConnection(url, "springboot123", "UtnFrc2022");
+            PreparedStatement pst = mySqlConn.prepareStatement("INSERT INTO `recibossueldotpiiv`.`empleado`"
+                    + " (`legajo`, `nombre`, `apellido`, `fecha_nac`, `fecha_ingreso`, `id_area`, `sueldo_bruto`) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?);");
+            
+            pst.setInt(1, empleado.legajo);
+            pst.setString(2, empleado.apellido);
+            pst.setDate(3, empleado.fecha_nac);
+            pst.setDate(4, empleado.fecha_ingreso);
+            pst.setInt(4, empleado.id_area);
+            pst.setFloat(4, empleado.sueldo_bruto);
+            
+            if(pst.execute()){
+                resultado.code = 200;
+                resultado.message = "Se ingreso un nuevo empleado";
+                resultado.resultado = null;
+            }
+            else{
+                  resultado.code = 400;
+                  resultado.message = "Error al ingresar un empleado";
+                  resultado.resultado = null;
+            }
+            pst.close();
+            mySqlConn.close();
+            
+            return resultado;
+        }catch (SQLException ex){
+
+                   resultado.setCode(500);
+                   resultado.setMessage(ex.getMessage());
+                    resultado.resultado  = null; 
               
               return resultado;
         }
