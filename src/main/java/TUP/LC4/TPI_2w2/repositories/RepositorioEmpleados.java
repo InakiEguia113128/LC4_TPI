@@ -6,6 +6,7 @@ package TUP.LC4.TPI_2w2.repositories;
 
 
 import TUP.LC4.TPI_2w2.models.Empleado;
+import TUP.LC4.TPI_2w2.resultados.ResultadoBase;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -62,9 +63,10 @@ public class RepositorioEmpleados {
         }
     }
     
-    public Empleado findEmpleadoByLegajo(int legajo){
+    public ResultadoBase  findEmpleadoByLegajo(int legajo){
+          ResultadoBase resultado =  new ResultadoBase();
         try{
-            Empleado result = null;
+            Empleado empleado = null;
             mySqlConn = DriverManager.getConnection(url, "springboot123", "UtnFrc2022");
             PreparedStatement pst = mySqlConn.prepareStatement("select e.id_empleado, \n" +
                     "e.legajo, \n" +
@@ -80,8 +82,8 @@ public class RepositorioEmpleados {
             pst.setInt(1, legajo);
             ResultSet resultSet = pst.executeQuery();
 
-            while (resultSet.next()){
-                result = new Empleado(resultSet.getInt("id_empleado"), 
+            if(resultSet.next()){
+                empleado = new Empleado(resultSet.getInt("id_empleado"), 
                         resultSet.getInt("legajo"), 
                         resultSet.getString("nombre"), 
                         resultSet.getString("apellido"), 
@@ -89,15 +91,26 @@ public class RepositorioEmpleados {
                         new Date(resultSet.getDate("fecha_ingreso").getTime()), 
                         resultSet.getFloat("sueldo_bruto"),
                         resultSet.getInt("id_area"));
+                        resultado.setCode(200);
+                        resultado.setMessage("Empleado encontrado");
+                        resultado.resultado  = empleado;                
             }
-            
+            else{
+                        resultado.setCode(400);
+                        resultado.setMessage("No se encontro el empleado encontrado");
+                        resultado.resultado  = null;      
+            }
             pst.close();
             mySqlConn.close();
             
-            return result;
+            return resultado;
         }catch (SQLException ex){
-            System.out.println(ex.getMessage());
-            return null;
+
+              resultado.setCode(500);
+              resultado.setMessage(ex.getMessage());
+              resultado.resultado  = null; 
+              
+              return resultado;
         }
     }
 }

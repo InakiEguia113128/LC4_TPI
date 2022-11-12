@@ -6,8 +6,10 @@ package TUP.LC4.TPI_2w2.controllers;
 
 import TUP.LC4.TPI_2w2.models.Empleado;
 import TUP.LC4.TPI_2w2.repositories.RepositorioEmpleados;
+import TUP.LC4.TPI_2w2.resultados.ResultadoBase;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,7 +33,17 @@ public class EmpleadosController {
     }
     
     @GetMapping("/getEmpleadoByLegajo/{legajo}")
-    public ResponseEntity<Empleado> getEmpleadoByLegajo(@PathVariable int legajo){
-        return ResponseEntity.ok(repo.findEmpleadoByLegajo(legajo));
+    public ResponseEntity<ResultadoBase> getEmpleadoByLegajo(@PathVariable int legajo){
+        ResultadoBase resultado =  repo.findEmpleadoByLegajo(legajo);
+        
+        if (resultado.code == 200) {
+               return new ResponseEntity(resultado, HttpStatus.OK);    
+        }
+        else if (resultado.code == 500)  {
+               return new ResponseEntity(resultado, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        else{
+             return new ResponseEntity(resultado, HttpStatus.BAD_REQUEST);
+        }
     }
 }
