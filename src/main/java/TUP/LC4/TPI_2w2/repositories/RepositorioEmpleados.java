@@ -126,22 +126,19 @@ public class RepositorioEmpleados {
                     + "VALUES (?, ?, ?, ?, ?, ?, ?);");
             
             pst.setInt(1, empleado.legajo);
-            pst.setString(2, empleado.apellido);
-            pst.setDate(3, empleado.fecha_nac);
-            pst.setDate(4, empleado.fecha_ingreso);
-            pst.setInt(4, empleado.id_area);
-            pst.setFloat(4, empleado.sueldo_bruto);
+            pst.setString(2, empleado.nombre);
+            pst.setString(3, empleado.apellido);
+            pst.setString(4, empleado.fecha_nac);
+            pst.setString(5, empleado.fecha_ingreso);
+            pst.setInt(6, empleado.id_area);
+            pst.setFloat(7, empleado.sueldo_bruto);
             
-            if(pst.execute()){
+            pst.execute();
+            
                 resultado.code = 200;
                 resultado.message = "Se ingreso un nuevo empleado";
                 resultado.resultado = null;
-            }
-            else{
-                  resultado.code = 400;
-                  resultado.message = "Error al ingresar un empleado";
-                  resultado.resultado = null;
-            }
+       
             pst.close();
             mySqlConn.close();
             
