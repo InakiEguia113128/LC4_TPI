@@ -4,6 +4,7 @@
  */
 package TUP.LC4.TPI_2w2.controllers;
 
+import TPU.LC4.TPI_2w2.dto.DTOEmpleado;
 import TUP.LC4.TPI_2w2.commands.PostEmpleado;
 import TUP.LC4.TPI_2w2.models.Empleado;
 import TUP.LC4.TPI_2w2.repositories.RepositorioAreas;
@@ -30,11 +31,12 @@ public class EmpleadosController {
     
     @Autowired
     private RepositorioEmpleados repoEmpleado;
+     @Autowired
     private RepositorioAreas repoArea;
     
     
     @GetMapping("/getEmpleados")
-    public ResponseEntity<List<Empleado>> getEmpleados(){
+    public ResponseEntity<List<DTOEmpleado>> getEmpleados(){
         return ResponseEntity.ok(repoEmpleado.getEmpleados());
     }
     
@@ -55,24 +57,28 @@ public class EmpleadosController {
     
     @PostMapping("/postEmpleado")
     public ResponseEntity<ResultadoBase> postEmpleado(@RequestBody PostEmpleado comando){
-        ResultadoBase resultado =  new ResultadoBase();
-        
-        resultado = repoArea.getAreaById(comando.id_area);
-        
-        if (resultado.code == 200) {
+         
+        ResultadoBase resultado =  this.repoEmpleado.findEmpleadoByLegajo(comando.legajo);
+        if(resultado.code  == 400){    
+                resultado = repoArea.getAreaById(comando.id_area);
+                         if (resultado.code == 200) {
             
-            resultado = repoEmpleado.postEmpleado(comando);
+                                    resultado = repoEmpleado.postEmpleado(comando);
             
-            if(resultado.code == 200){
+                                             if(resultado.code == 200){
                 
-                  return new ResponseEntity(resultado, HttpStatus.OK);    
-            }
-            else{
-                    return new ResponseEntity(resultado, HttpStatus.BAD_REQUEST);
+                                                       return new ResponseEntity(resultado, HttpStatus.OK);    
+                                                                                           }
+          else{
+                  return new ResponseEntity(resultado, HttpStatus.BAD_REQUEST);
             }
         }
+    }
         else{
-             return new ResponseEntity(resultado, HttpStatus.BAD_REQUEST);
+         resultado.setCode(400);
+         resultado.setMessage("Este legajo ya esta registrado");
+         return new ResponseEntity(resultado, HttpStatus.BAD_REQUEST);   
         }
+        return new ResponseEntity(resultado, HttpStatus.BAD_REQUEST);   
     } 
 }

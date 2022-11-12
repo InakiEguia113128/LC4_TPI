@@ -4,8 +4,8 @@
  */
 package TUP.LC4.TPI_2w2.repositories;
 
+import TPU.LC4.TPI_2w2.dto.DTOEmpleado;
 import TUP.LC4.TPI_2w2.commands.PostEmpleado;
-import TUP.LC4.TPI_2w2.models.Empleado;
 import TUP.LC4.TPI_2w2.resultados.ResultadoBase;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -28,11 +28,12 @@ public class RepositorioEmpleados {
     private final String url = String.format("jdbc:mysql://%s:%d/%s?useSSL=false&serverTimezone=UTC", "2022-api-tpi-iv-dev.mysql.database.azure.com", 3306, "recibossueldotpiiv");
     private Connection mySqlConn;
 
-    public List<Empleado> getEmpleados() {
+    public List<DTOEmpleado> getEmpleados() {
         try {
+            Date date = new Date();
             mySqlConn = DriverManager.getConnection(url, "springboot123", "UtnFrc2022");
             /*return em.createQuery("select e from Empleado e", Empleado.class).getResultList();*/
-            var results = new ArrayList<Empleado>();
+            var results = new ArrayList<DTOEmpleado>();
             Statement st = mySqlConn.createStatement();
             ResultSet resultSet = st.executeQuery("select e.id_empleado, \n"
                     + "e.legajo, \n"
@@ -45,14 +46,15 @@ public class RepositorioEmpleados {
                     + "from empleado e \n");
 
             while (resultSet.next()) {
-                results.add(new Empleado(resultSet.getInt("id_empleado"),
+                results.add(new DTOEmpleado(resultSet.getInt("id_empleado"),
                         resultSet.getInt("legajo"),
                         resultSet.getString("nombre"),
                         resultSet.getString("apellido"),
                         new Date(resultSet.getDate("fecha_nac").getTime()),
                         new Date(resultSet.getDate("fecha_ingreso").getTime()),
                         resultSet.getFloat("sueldo_bruto"),
-                        resultSet.getInt("id_area")));
+                        resultSet.getInt("id_area"),
+                        date.getYear() - resultSet.getDate("fecha_ingreso").getYear()));
             }
 
             st.close();
@@ -66,8 +68,9 @@ public class RepositorioEmpleados {
 
     public ResultadoBase findEmpleadoByLegajo(int legajo) {
         ResultadoBase resultado = new ResultadoBase();
+        Date date = new Date();
         try {
-            Empleado empleado = null;
+            DTOEmpleado empleado = null;
             mySqlConn = DriverManager.getConnection(url, "springboot123", "UtnFrc2022");
             PreparedStatement pst = mySqlConn.prepareStatement("select e.id_empleado, \n"
                     + "e.legajo, \n"
@@ -82,16 +85,16 @@ public class RepositorioEmpleados {
 
             pst.setInt(1, legajo);
             ResultSet resultSet = pst.executeQuery();
-
             if (resultSet.next()) {
-                empleado = new Empleado(resultSet.getInt("id_empleado"),
+                empleado = new DTOEmpleado(resultSet.getInt("id_empleado"),
                         resultSet.getInt("legajo"),
                         resultSet.getString("nombre"),
                         resultSet.getString("apellido"),
                         new Date(resultSet.getDate("fecha_nac").getTime()),
                         new Date(resultSet.getDate("fecha_ingreso").getTime()),
                         resultSet.getFloat("sueldo_bruto"),
-                        resultSet.getInt("id_area"));
+                        resultSet.getInt("id_area"),
+                        date.getYear() - resultSet.getDate("fecha_ingreso").getYear());
                 resultado.setCode(200);
                 resultado.setMessage("Empleado encontrado");
                 resultado.resultado = empleado;
@@ -124,22 +127,19 @@ public class RepositorioEmpleados {
                     + "VALUES (?, ?, ?, ?, ?, ?, ?);");
 
             pst.setInt(1, empleado.legajo);
-            pst.setString(2, empleado.apellido);
-            pst.setDate(3, empleado.fecha_nac);
-            pst.setDate(4, empleado.fecha_ingreso);
-            pst.setInt(4, empleado.id_area);
-            pst.setFloat(4, empleado.sueldo_bruto);
+            pst.setString(2, empleado.nombre);
+            pst.setString(3, empleado.apellido);
+            pst.setString(4, empleado.fecha_nac);
+            pst.setString(5, empleado.fecha_ingreso);
+            pst.setInt(6, empleado.id_area);
+            pst.setFloat(7, empleado.sueldo_bruto);
 
-            if (pst.execute()) {
-                resultado.code = 200;
-                resultado.message = "Se ingreso un nuevo empleado";
-                resultado.resultado = null;
-            } else {
-                resultado.code = 400;
-                resultado.message = "Error al ingresar un empleado";
-                resultado.resultado = null;
-            }
-            pst.close();
+            pst.execute();
+
+            resultado.code = 200;
+            resultado.message = "Se ingreso un nuevo empleado";
+            resultado.resultado = null;
+            
             mySqlConn.close();
 
             return resultado;

@@ -17,8 +17,8 @@ public class PostEmpleado {
     public int legajo;
     public String nombre;
     public String apellido;
-    public  Date fecha_nac;
-    public Date fecha_ingreso;
+    public  String fecha_nac;
+    public String fecha_ingreso;
     public float  sueldo_bruto;
     public int id_area;
 }
