@@ -8,6 +8,7 @@ package TUP.LC4.TPI_2w2.repositories;
 import TPU.LC4.TPI_2w2.dto.DTOEmpleado;
 import TUP.LC4.TPI_2w2.commands.PostEmpleado;
 import TUP.LC4.TPI_2w2.models.Empleado;
+import TUP.LC4.TPI_2w2.models.Recibo;
 import TUP.LC4.TPI_2w2.resultados.ResultadoBase;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -103,7 +104,7 @@ public class RepositorioEmpleados {
             }
             else{
                         resultado.setCode(400);
-                        resultado.setMessage("No se encontro el empleado encontrado");
+                        resultado.setMessage("No se encontro el empleado");
                         resultado.resultado  = null;      
             }
             pst.close();
@@ -157,4 +158,56 @@ public class RepositorioEmpleados {
               return resultado;
         }
     }
+     
+    public ResultadoBase getRecibosByLegajo(int legajo){
+           ResultadoBase resultado =  new ResultadoBase();
+           
+        try{
+            mySqlConn = DriverManager.getConnection(url, "springboot123", "UtnFrc2022");
+            
+            PreparedStatement pst = mySqlConn.prepareStatement("select * from recibossueldotpiiv.recibo_sueldo rs join recibossueldotpiiv.empleado e \n" +
+                                                                                                                        "on rs.id_empleado = e.id_empleado \n" +
+                                                                                                                           "where legajo   = ?");         
+            pst.setInt(1, legajo);
+            ResultSet resultSet = pst.executeQuery();
+              var results = new ArrayList<Recibo>();
+            while(resultSet.next()){
+                    results.add(new Recibo(
+                            resultSet.getInt(1),
+                            resultSet.getInt(2),
+                            resultSet.getInt(3),
+                            resultSet.getInt(4),
+                            resultSet.getInt(5),
+                            resultSet.getInt(6),
+                            resultSet.getInt(7),
+                            resultSet.getDate(8)
+                    ));
+           }
+                         resultado.setCode(200);
+                        resultado.setMessage("Empleado encontrado");
+                        resultado.resultado  = results;
+        
+            
+          
+            pst.close();
+            mySqlConn.close();
+            
+            return resultado;
+        }
+        
+
+            catch (SQLException ex){
+
+              resultado.setCode(500);
+              resultado.setMessage(ex.getMessage());
+              resultado.resultado  = null; 
+              
+              return resultado;
+        }
+    }
 }
+      
+     
+     
+    
+

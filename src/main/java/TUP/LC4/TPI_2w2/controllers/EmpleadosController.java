@@ -9,6 +9,7 @@ import TUP.LC4.TPI_2w2.commands.PostEmpleado;
 import TUP.LC4.TPI_2w2.models.Empleado;
 import TUP.LC4.TPI_2w2.repositories.RepositorioAreas;
 import TUP.LC4.TPI_2w2.repositories.RepositorioEmpleados;
+import TUP.LC4.TPI_2w2.repositories.RepositorioReciboSueldo;
 import TUP.LC4.TPI_2w2.resultados.ResultadoBase;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,8 @@ public class EmpleadosController {
     private RepositorioEmpleados repoEmpleado;
      @Autowired
     private RepositorioAreas repoArea;
+      @Autowired
+    private RepositorioReciboSueldo repoRecibo;
     
     
     @GetMapping("/getEmpleados")
@@ -81,4 +84,23 @@ public class EmpleadosController {
         }
         return new ResponseEntity(resultado, HttpStatus.BAD_REQUEST);   
     } 
+    
+    
+    
+    @GetMapping("/getRecibos/{legajo}")
+    public ResponseEntity<ResultadoBase> getEmpleadoRecibos(@PathVariable int legajo){
+        
+        var resultado =  repoEmpleado.findEmpleadoByLegajo(legajo);
+        if(resultado.code  == 200){
+            
+            resultado = repoEmpleado.getRecibosByLegajo(legajo);
+            
+            if(resultado.code ==200){
+                    return new ResponseEntity(resultado, HttpStatus.OK);        
+            }
+            return new ResponseEntity(resultado, HttpStatus.BAD_REQUEST);    
+            
+        }
+        return new ResponseEntity(resultado, HttpStatus.BAD_REQUEST);         
+    }     
 }
