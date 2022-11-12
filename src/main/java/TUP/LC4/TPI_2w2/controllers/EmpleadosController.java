@@ -4,6 +4,7 @@
  */
 package TUP.LC4.TPI_2w2.controllers;
 
+import TPU.LC4.TPI_2w2.dto.DTOEmpleado;
 import TUP.LC4.TPI_2w2.commands.PostEmpleado;
 import TUP.LC4.TPI_2w2.models.Empleado;
 import TUP.LC4.TPI_2w2.repositories.RepositorioAreas;
@@ -35,7 +36,7 @@ public class EmpleadosController {
     
     
     @GetMapping("/getEmpleados")
-    public ResponseEntity<List<Empleado>> getEmpleados(){
+    public ResponseEntity<List<DTOEmpleado>> getEmpleados(){
         return ResponseEntity.ok(repoEmpleado.getEmpleados());
     }
     
