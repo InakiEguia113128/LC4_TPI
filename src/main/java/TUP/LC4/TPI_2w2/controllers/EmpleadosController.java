@@ -19,19 +19,19 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Iñaki
  */
 @RestController
-@RequestMapping("/empleados")
+@RequestMapping("/empleado")
 public class EmpleadosController {
     
     @Autowired
     private RepositorioEmpleados repo;
     
     @GetMapping("/getEmpleados")
-    public ResponseEntity<List<Empleado>> GetEmpleados(){
+    public ResponseEntity<List<Empleado>> getEmpleados(){
         return ResponseEntity.ok(repo.getEmpleados());
     }
     
     @GetMapping("/getEmpleadoByLegajo/{legajo}")
-    public ResponseEntity<Empleado> GetEmpleadoByLegajo(@PathVariable int legajo){
+    public ResponseEntity<Empleado> getEmpleadoByLegajo(@PathVariable int legajo){
         return ResponseEntity.ok(repo.findEmpleadoByLegajo(legajo));
     }
 }
