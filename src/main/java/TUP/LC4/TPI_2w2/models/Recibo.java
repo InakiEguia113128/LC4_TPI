@@ -17,7 +17,7 @@ public class Recibo {
             
     public float sueldo_bruto;
     
-    public float monto_antiguedad;
+    public int antiguedad;
     
     public float jubilacion;
     
@@ -27,14 +27,33 @@ public class Recibo {
     
     public int id_empleado;
     
-    public Date fecha_recibo;
+    public String fecha_recibo;
+    
+    public int mes;
+    
+    public int anio; 
 
     public Recibo(){}
     
-    public Recibo(int id_recibo, float sueldo_bruto, float monto_antiguedad, float jubilacion, float obra_social, float fondo_alta_complejidad, int id_empleado, Date fecha_recibo) {
+    public Recibo(int id_recibo, float sueldo_bruto, int antiguedad, float jubilacion, float obra_social, float fondo_alta_complejidad, int id_empleado, String fecha_recibo,int anio, int mes) {
         this.id_recibo = id_recibo;
         this.sueldo_bruto = sueldo_bruto;
-        this.monto_antiguedad = monto_antiguedad;
+        this.antiguedad = antiguedad;
+        this.jubilacion = jubilacion;
+        this.obra_social = obra_social;
+        this.fondo_alta_complejidad = fondo_alta_complejidad;
+        this.id_empleado = id_empleado;
+        this.fecha_recibo = fecha_recibo;
+        this.anio = anio;
+        this.mes = mes;
+    }
+
+
+    
+      public Recibo(int id_recibo, float sueldo_bruto, int antiguedad, float jubilacion, float obra_social, float fondo_alta_complejidad, int id_empleado, String fecha_recibo) {
+        this.id_recibo = id_recibo;
+        this.sueldo_bruto = sueldo_bruto;
+        this.antiguedad = antiguedad;
         this.jubilacion = jubilacion;
         this.obra_social = obra_social;
         this.fondo_alta_complejidad = fondo_alta_complejidad;
