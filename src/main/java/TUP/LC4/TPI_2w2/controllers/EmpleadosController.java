@@ -25,9 +25,9 @@ public class EmpleadosController {
     @Autowired
     private RepositorioEmpleados repo;
     
-    @GetMapping("/getEmpleado")
-    public ResponseEntity<List<Empleado>> GetListaEmpleados(){
-        return ResponseEntity.ok(repo.findAll());
+    @GetMapping("/getEmpleados")
+    public ResponseEntity<List<Empleado>> GetEmpleados(){
+        return ResponseEntity.ok(repo.getEmpleados());
     }
     
     @GetMapping("/getEmpleadoByLegajo/{legajo}")

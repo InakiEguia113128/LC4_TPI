@@ -4,107 +4,69 @@
  */
 package TUP.LC4.TPI_2w2.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.Basic;
+import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
  * @author Iñaki
  */
 @Entity
-@Table(name = "empleados")
-
-public class Empleado {
+@Table(name = "empleado")
+@Getter @Setter
+public class Empleado implements Serializable{ 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public int id_empleado;
     
-    @Id @Basic
+    @Column
     public int legajo;
-    @Basic
+    
+    @Column
     public String nombre;
-    @Basic
+    
+    @Column
     public String apellido;
-    @Basic
-    public Date fechaNacimiento;
-    @Basic
-    public int antiguedad;
-    @Basic
-    public String area;
-    @Basic
-    public float sueldoBruto;
+    
+    @Column
+    public Date fecha_nac;
+    
+    @Column
+    public Date fecha_ingreso;
+    
+    @ManyToOne(targetEntity= Area.class)
+    @JoinColumn(name="id_area")
+    @JsonManagedReference
+    private Area area ;
+    
+    @OneToMany(mappedBy="empleado", fetch=FetchType.EAGER)
+    @JsonManagedReference
+    private List<Recibo> recibos; 
 
-    public Empleado() {
-    }
+    public Empleado() {}
 
-    public Empleado(int legajo, String nombre, String apellido, Date fechaNacimiento, int antiguedad, String area, float sueldoBruto) {
+    public Empleado(int id_empleado, int legajo, String nombre, String apellido, Date fechaNacimiento, Date fecha_ingreso, Area area) {
+        this.id_empleado = id_empleado;
         this.legajo = legajo;
         this.nombre = nombre;
         this.apellido = apellido;
-        this.fechaNacimiento = fechaNacimiento;
-        this.antiguedad = antiguedad;
-        this.area = area;
-        this.sueldoBruto = sueldoBruto;
-    }
-
-    public int getLegajo() {
-        return legajo;
-    }
-
-    public void setLegajo(int legajo) {
-        this.legajo = legajo;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getApellido() {
-        return apellido;
-    }
-
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
-    }
-
-    public Date getFechaNacimiento() {
-        return fechaNacimiento;
-    }
-
-    public void setFechaNacimiento(Date fechaNacimiento) {
-        this.fechaNacimiento = fechaNacimiento;
-    }
-
-    public int getAntiguedad() {
-        return antiguedad;
-    }
-
-    public void setAntiguedad(int antiguedad) {
-        this.antiguedad = antiguedad;
-    }
-
-    public String getArea() {
-        return area;
-    }
-
-    public void setArea(String area) {
+        this.fecha_nac = fechaNacimiento;
+        this.fecha_ingreso = fecha_ingreso;
         this.area = area;
     }
-
-    public float getSueldoBruto() {
-        return sueldoBruto;
-    }
-
-    public void setSueldoBruto(float sueldoBruto) {
-        this.sueldoBruto = sueldoBruto;
-    }
-
-    @Override
-    public String toString() {
-        return "Legajo " + legajo + ", nombre " + nombre + ", apellido " + apellido + ", Nacimiento " + fechaNacimiento + ", antiguedad " + antiguedad + ", area " + area + ", sueldoBruto" + sueldoBruto;
-    }
+    
 }
