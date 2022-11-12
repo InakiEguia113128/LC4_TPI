@@ -6,7 +6,6 @@ package TUP.LC4.TPI_2w2.controllers;
 
 import TPU.LC4.TPI_2w2.dto.DTOEmpleado;
 import TUP.LC4.TPI_2w2.commands.PostReciboSueldo;
-import TUP.LC4.TPI_2w2.models.Empleado;
 import TUP.LC4.TPI_2w2.repositories.RepositorioEmpleados;
 import TUP.LC4.TPI_2w2.repositories.RepositorioReciboSueldo;
 import TUP.LC4.TPI_2w2.resultados.ResultadoBase;
