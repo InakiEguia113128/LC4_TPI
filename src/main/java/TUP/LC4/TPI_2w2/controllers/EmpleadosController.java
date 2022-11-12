@@ -28,57 +28,52 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/empleado")
 public class EmpleadosController {
-    
+
     @Autowired
     private RepositorioEmpleados repoEmpleado;
-     @Autowired
+    @Autowired
     private RepositorioAreas repoArea;
-    
-    
+
     @GetMapping("/getEmpleados")
-    public ResponseEntity<List<DTOEmpleado>> getEmpleados(){
+    public ResponseEntity<List<DTOEmpleado>> getEmpleados() {
         return ResponseEntity.ok(repoEmpleado.getEmpleados());
     }
-    
+
     @GetMapping("/getEmpleadoByLegajo/{legajo}")
-    public ResponseEntity<ResultadoBase> getEmpleadoByLegajo(@PathVariable int legajo){
-        ResultadoBase resultado =  repoEmpleado.findEmpleadoByLegajo(legajo);
-        
+    public ResponseEntity<ResultadoBase> getEmpleadoByLegajo(@PathVariable int legajo) {
+        ResultadoBase resultado = repoEmpleado.findEmpleadoByLegajo(legajo);
+
         if (resultado.code == 200) {
-               return new ResponseEntity(resultado, HttpStatus.OK);    
-        }
-        else if (resultado.code == 500)  {
-               return new ResponseEntity(resultado, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        else{
-             return new ResponseEntity(resultado, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(resultado, HttpStatus.OK);
+        } else if (resultado.code == 500) {
+            return new ResponseEntity(resultado, HttpStatus.INTERNAL_SERVER_ERROR);
+        } else {
+            return new ResponseEntity(resultado, HttpStatus.BAD_REQUEST);
         }
     }
-    
+
     @PostMapping("/postEmpleado")
-    public ResponseEntity<ResultadoBase> postEmpleado(@RequestBody PostEmpleado comando){
-         
-        ResultadoBase resultado =  this.repoEmpleado.findEmpleadoByLegajo(comando.legajo);
-        if(resultado.code  == 400){    
-                resultado = repoArea.getAreaById(comando.id_area);
-                         if (resultado.code == 200) {
-            
-                                    resultado = repoEmpleado.postEmpleado(comando);
-            
-                                             if(resultado.code == 200){
-                
-                                                       return new ResponseEntity(resultado, HttpStatus.OK);    
-                                                                                           }
-          else{
-                  return new ResponseEntity(resultado, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ResultadoBase> postEmpleado(@RequestBody PostEmpleado comando) {
+
+        ResultadoBase resultado = this.repoEmpleado.findEmpleadoByLegajo(comando.legajo);
+        if (resultado.code == 400) {
+            resultado = repoArea.getAreaById(comando.id_area);
+            if (resultado.code == 200) {
+
+                resultado = repoEmpleado.postEmpleado(comando);
+
+                if (resultado.code == 200) {
+
+                    return new ResponseEntity(resultado, HttpStatus.OK);
+                } else {
+                    return new ResponseEntity(resultado, HttpStatus.BAD_REQUEST);
+                }
             }
+        } else {
+            resultado.setCode(400);
+            resultado.setMessage("Este legajo ya esta registrado");
+            return new ResponseEntity(resultado, HttpStatus.BAD_REQUEST);
         }
+        return new ResponseEntity(resultado, HttpStatus.BAD_REQUEST);
     }
-        else{
-         resultado.setCode(400);
-         resultado.setMessage("Este legajo ya esta registrado");
-         return new ResponseEntity(resultado, HttpStatus.BAD_REQUEST);   
-        }
-        return new ResponseEntity(resultado, HttpStatus.BAD_REQUEST);   
-    } 
 }

@@ -4,6 +4,7 @@
  */
 package TUP.LC4.TPI_2w2.controllers;
 
+import TPU.LC4.TPI_2w2.dto.DTOEmpleado;
 import TUP.LC4.TPI_2w2.commands.PostReciboSueldo;
 import TUP.LC4.TPI_2w2.models.Empleado;
 import TUP.LC4.TPI_2w2.repositories.RepositorioEmpleados;
@@ -12,7 +13,6 @@ import TUP.LC4.TPI_2w2.resultados.ResultadoBase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,10 +36,10 @@ public class RecibosController {
     public ResponseEntity<ResultadoBase> registrarReciboSueldo(@RequestBody PostReciboSueldo reciboSueldo) {
         var resultado = empRepo.findEmpleadoByLegajo(reciboSueldo.legajo);
         if (resultado.code == 200) {
-            if (reciboRepo.existeReciboPorLegajoFecha(reciboSueldo.legajo, reciboSueldo.fechaRecibo).resultado != null) {
+            if (reciboRepo.existeReciboPorLegajoFecha(reciboSueldo.legajo, reciboSueldo.fechaRecibo).code == 400) {
                 return new ResponseEntity(resultado, HttpStatus.BAD_REQUEST);
             } else {
-                resultado = reciboRepo.insertReciboSueldo(reciboSueldo, (Empleado) resultado.getResultado());
+                resultado = reciboRepo.insertReciboSueldo(reciboSueldo, (DTOEmpleado) resultado.getResultado());
                 if (resultado.code == 200) {
                     return new ResponseEntity(resultado, HttpStatus.OK);
                 } else {

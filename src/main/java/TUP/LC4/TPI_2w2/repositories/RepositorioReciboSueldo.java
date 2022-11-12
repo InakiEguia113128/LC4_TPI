@@ -4,6 +4,7 @@
  */
 package TUP.LC4.TPI_2w2.repositories;
 
+import TPU.LC4.TPI_2w2.dto.DTOEmpleado;
 import TUP.LC4.TPI_2w2.commands.PostReciboSueldo;
 import TUP.LC4.TPI_2w2.models.Empleado;
 import TUP.LC4.TPI_2w2.models.Recibo;
@@ -13,15 +14,10 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 import java.util.TimeZone;
 import org.springframework.stereotype.Repository;
 
@@ -57,7 +53,7 @@ public class RepositorioReciboSueldo {
                 recibo.setId_empleado(rs.getInt("id_empleado"));
                 recibo.setFecha_recibo(rs.getString("fecha_recibo"));
                 recibo.setSueldo_bruto(rs.getFloat("sueldo_bruto"));
-                recibo.setAntiguedad(rs.getString("antiguedad"));
+                recibo.setAntiguedad(rs.getFloat("antiguedad"));
                 recibo.setJubilacion(rs.getFloat("jubilacion"));
                 recibo.setObra_social(rs.getFloat("obra_social"));
                 recibo.setFondo_alta_complejidad(rs.getFloat("fondo_alta_complejidad"));
@@ -84,7 +80,7 @@ public class RepositorioReciboSueldo {
         return resultado;
     }
 
-    public ResultadoBase insertReciboSueldo(PostReciboSueldo dto, Empleado emp) {
+    public ResultadoBase insertReciboSueldo(PostReciboSueldo dto, DTOEmpleado emp) {
         var resultado = new ResultadoBase();
 
         try {

@@ -17,7 +17,7 @@ public class Recibo {
             
     public float sueldo_bruto;
     
-    public String antiguedad;
+    public float antiguedad;
     
     public float jubilacion;
     
@@ -35,7 +35,7 @@ public class Recibo {
 
     public Recibo(){}
     
-    public Recibo(int id_recibo, float sueldo_bruto, String antiguedad, float jubilacion, float obra_social, float fondo_alta_complejidad, int id_empleado, String fecha_recibo,int anio, int mes) {
+    public Recibo(int id_recibo, float sueldo_bruto, float antiguedad, float jubilacion, float obra_social, float fondo_alta_complejidad, int id_empleado, String fecha_recibo,int anio, int mes) {
         this.id_recibo = id_recibo;
         this.sueldo_bruto = sueldo_bruto;
         this.antiguedad = antiguedad;

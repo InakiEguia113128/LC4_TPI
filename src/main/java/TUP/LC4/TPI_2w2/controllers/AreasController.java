@@ -48,7 +48,7 @@ public class AreasController {
     @GetMapping("/getAreaByDescripcion/{descripcion}")
     public ResponseEntity<ResultadoBase> getAreaByDescripcion(@PathVariable String descripcion) {
         var resultado = repo.getAreaByDescripcion(descripcion);
-       if (resultado.code == 200) {
+        if (resultado.code == 200) {
             return new ResponseEntity(resultado, HttpStatus.OK);
 
         } else if (resultado.code == 400) {

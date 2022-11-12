@@ -85,6 +85,7 @@ public class RepositorioEmpleados {
 
             pst.setInt(1, legajo);
             ResultSet resultSet = pst.executeQuery();
+
             if (resultSet.next()) {
                 empleado = new DTOEmpleado(resultSet.getInt("id_empleado"),
                         resultSet.getInt("legajo"),
@@ -95,6 +96,10 @@ public class RepositorioEmpleados {
                         resultSet.getFloat("sueldo_bruto"),
                         resultSet.getInt("id_area"),
                         date.getYear() - resultSet.getDate("fecha_ingreso").getYear());
+
+            }
+
+            if (empleado != null) {
                 resultado.setCode(200);
                 resultado.setMessage("Empleado encontrado");
                 resultado.resultado = empleado;
@@ -139,7 +144,7 @@ public class RepositorioEmpleados {
             resultado.code = 200;
             resultado.message = "Se ingreso un nuevo empleado";
             resultado.resultado = null;
-            
+
             mySqlConn.close();
 
             return resultado;
