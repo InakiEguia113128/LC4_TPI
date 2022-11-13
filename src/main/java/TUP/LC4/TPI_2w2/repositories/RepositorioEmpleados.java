@@ -107,7 +107,7 @@ public class RepositorioEmpleados {
                 resultado.resultado = empleado;
             } else {
                 resultado.setCode(400);
-                resultado.setMessage("No se encontro el empleado encontrado");
+                resultado.setMessage("No se encontro el empleado");
                 resultado.resultado = null;
             }
             pst.close();
