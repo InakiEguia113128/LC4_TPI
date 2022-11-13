@@ -41,7 +41,7 @@ public class RepositorioReciboSueldo {
             cal.setTime(parsed);
             mySqlConn = DriverManager.getConnection(url, "springboot123", "UtnFrc2022");
 
-            PreparedStatement prst = mySqlConn.prepareStatement("select r.id_empleado, r.fecha_recibo, r.sueldo_bruto, r.antiguedad, r.jubilacion, r.obra_social, r.fondo_alta_complejidad from recibo_sueldo r join empleado e on r.id_empleado = e.id_empleado where e.legajo = ? and r.mes = ? and r.anio = ?");
+            PreparedStatement prst = mySqlConn.prepareStatement("select r.id_recibo, r.id_empleado, r.fecha_recibo, r.sueldo_bruto, r.antiguedad, r.jubilacion, r.obra_social, r.fondo_alta_complejidad, r.anio, r.mes from recibo_sueldo r join empleado e on r.id_empleado = e.id_empleado where e.legajo = ? and r.mes = ? and r.anio = ?");
 
             prst.setInt(1, legajo);
             prst.setInt(2, cal.get(Calendar.MONTH));
@@ -50,6 +50,7 @@ public class RepositorioReciboSueldo {
 
             if (rs.next()) {
                 recibo = new Recibo();
+                recibo.setId_recibo(rs.getInt("id_recibo"));
                 recibo.setId_empleado(rs.getInt("id_empleado"));
                 recibo.setFecha_recibo(rs.getString("fecha_recibo"));
                 recibo.setSueldo_bruto(rs.getFloat("sueldo_bruto"));
@@ -57,6 +58,8 @@ public class RepositorioReciboSueldo {
                 recibo.setJubilacion(rs.getFloat("jubilacion"));
                 recibo.setObra_social(rs.getFloat("obra_social"));
                 recibo.setFondo_alta_complejidad(rs.getFloat("fondo_alta_complejidad"));
+                recibo.setAnio(rs.getInt("anio"));
+                recibo.setMes(rs.getInt("mes"));
             }
 
             prst.close();
