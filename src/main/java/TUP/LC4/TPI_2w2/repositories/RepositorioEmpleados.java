@@ -6,6 +6,7 @@ package TUP.LC4.TPI_2w2.repositories;
 
 import TPU.LC4.TPI_2w2.dto.DTOEmpleado;
 import TUP.LC4.TPI_2w2.commands.PostEmpleado;
+import TUP.LC4.TPI_2w2.models.Area;
 import TUP.LC4.TPI_2w2.models.Empleado;
 import TUP.LC4.TPI_2w2.models.Recibo;
 import TUP.LC4.TPI_2w2.resultados.ResultadoBase;
@@ -44,10 +45,25 @@ public class RepositorioEmpleados {
                     + "e.fecha_nac, \n"
                     + "e.fecha_ingreso, \n"
                     + "e.id_area, \n"
-                    + "e.sueldo_bruto \n"
-                    + "from empleado e \n");
+                    + "e.sueldo_bruto, \n"
+                    + "a.id_area as id_area, \n"
+                    + "a.descripcion as descripcionArea \n"
+                    + "from empleado e \n"
+                    + "join area a on e.id_area = a.id_area");
 
             while (resultSet.next()) {
+                /*results.add(new DTOEmpleado(resultSet.getInt("id_empleado"),
+                        resultSet.getInt("legajo"),
+                        resultSet.getString("nombre"),
+                        resultSet.getString("apellido"),
+                        new Date(resultSet.getDate("fecha_nac").getTime()),
+                        new Date(resultSet.getDate("fecha_ingreso").getTime()),
+                        resultSet.getFloat("sueldo_bruto"),
+                        resultSet.getInt("id_area"),
+                        date.getYear() - resultSet.getDate("fecha_ingreso").getYear(),
+                        resultSet.getString("area")
+                ));*/
+
                 results.add(new DTOEmpleado(resultSet.getInt("id_empleado"),
                         resultSet.getInt("legajo"),
                         resultSet.getString("nombre"),
@@ -56,7 +72,8 @@ public class RepositorioEmpleados {
                         new Date(resultSet.getDate("fecha_ingreso").getTime()),
                         resultSet.getFloat("sueldo_bruto"),
                         resultSet.getInt("id_area"),
-                        date.getYear() - resultSet.getDate("fecha_ingreso").getYear()));
+                        date.getYear() - resultSet.getDate("fecha_ingreso").getYear(),
+                        new Area(resultSet.getInt("id_area"), resultSet.getString("descripcionArea"))));
             }
 
             st.close();
@@ -81,9 +98,12 @@ public class RepositorioEmpleados {
                     + "e.fecha_nac, \n"
                     + "e.fecha_ingreso, \n"
                     + "e.id_area, \n"
-                    + "e.sueldo_bruto \n"
+                    + "e.sueldo_bruto, \n"
+                    + "a.id_area as id_area, \n"
+                    + "a.descripcion as descripcionArea \n"
                     + "from empleado e \n"
-                    + "where legajo = ?");
+                    + "join area a on e.id_area = a.id_area \n"
+                    + "where e.legajo = ?");
 
             pst.setInt(1, legajo);
             ResultSet resultSet = pst.executeQuery();
@@ -97,8 +117,8 @@ public class RepositorioEmpleados {
                         new Date(resultSet.getDate("fecha_ingreso").getTime()),
                         resultSet.getFloat("sueldo_bruto"),
                         resultSet.getInt("id_area"),
-                        date.getYear() - resultSet.getDate("fecha_ingreso").getYear());
-
+                        date.getYear() - resultSet.getDate("fecha_ingreso").getYear(),
+                        new Area(resultSet.getInt("id_area"), resultSet.getString("descripcionArea")));
             }
 
             if (empleado != null) {
@@ -159,56 +179,46 @@ public class RepositorioEmpleados {
             return resultado;
         }
     }
-     
-    public ResultadoBase getRecibosByLegajo(int legajo){
-           ResultadoBase resultado =  new ResultadoBase();
-           
-        try{
+
+    public ResultadoBase getRecibosByLegajo(int legajo) {
+        ResultadoBase resultado = new ResultadoBase();
+
+        try {
             mySqlConn = DriverManager.getConnection(url, "springboot123", "UtnFrc2022");
-            
-            PreparedStatement pst = mySqlConn.prepareStatement("select * from recibossueldotpiiv.recibo_sueldo rs join recibossueldotpiiv.empleado e \n" +
-                                                                                                                        "on rs.id_empleado = e.id_empleado \n" +
-                                                                                                                           "where legajo   = ?");         
+
+            PreparedStatement pst = mySqlConn.prepareStatement("select * from recibossueldotpiiv.recibo_sueldo rs join recibossueldotpiiv.empleado e \n"
+                    + "on rs.id_empleado = e.id_empleado \n"
+                    + "where legajo   = ?");
             pst.setInt(1, legajo);
             ResultSet resultSet = pst.executeQuery();
-              var results = new ArrayList<Recibo>();
-            while(resultSet.next()){
-                    results.add(new Recibo(
-                            resultSet.getInt(1),
-                            resultSet.getInt(2),
-                            resultSet.getInt(3),
-                            resultSet.getInt(4),
-                            resultSet.getInt(5),
-                            resultSet.getInt(6),
-                            resultSet.getInt(7),
-                            resultSet.getString(8)
-                    ));
-           }
-                         resultado.setCode(200);
-                        resultado.setMessage("Empleado encontrado");
-                        resultado.resultado  = results;
-        
-            
-          
+            var results = new ArrayList<Recibo>();
+            while (resultSet.next()) {
+                results.add(new Recibo(
+                        resultSet.getInt(1),
+                        resultSet.getInt(2),
+                        resultSet.getInt(3),
+                        resultSet.getInt(4),
+                        resultSet.getInt(5),
+                        resultSet.getInt(6),
+                        resultSet.getInt(7),
+                        resultSet.getString(8)
+                ));
+            }
+            resultado.setCode(200);
+            resultado.setMessage("El legajo registra recibos de sueldos.");
+            resultado.resultado = results;
+
             pst.close();
             mySqlConn.close();
-            
+
             return resultado;
-        }
-        
+        } catch (SQLException ex) {
 
-            catch (SQLException ex){
+            resultado.setCode(500);
+            resultado.setMessage(ex.getMessage());
+            resultado.resultado = null;
 
-              resultado.setCode(500);
-              resultado.setMessage(ex.getMessage());
-              resultado.resultado  = null; 
-              
-              return resultado;
+            return resultado;
         }
     }
 }
-      
-     
-     
-    
-

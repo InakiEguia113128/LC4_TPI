@@ -41,7 +41,7 @@ public class AreasController {
                 return new ResponseEntity(resultado.message, HttpStatus.BAD_REQUEST);
             }
         } else {
-            return new ResponseEntity(String.format("El %s area ya existe en la base de datos.", area.Descripcion), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(String.format("El área %s area ya existe en la base de datos.", area.Descripcion), HttpStatus.BAD_REQUEST);
         }
     }
 
