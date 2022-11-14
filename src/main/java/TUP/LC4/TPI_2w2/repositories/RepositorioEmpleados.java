@@ -195,18 +195,18 @@ public class RepositorioEmpleados {
             while (resultSet.next()) {
                 results.add(new Recibo(
                         resultSet.getInt(1),
-                        resultSet.getInt(2),
+                        resultSet.getFloat(2),
                         resultSet.getInt(3),
-                        resultSet.getInt(4),
-                        resultSet.getInt(5),
-                        resultSet.getInt(6),
+                        resultSet.getFloat(4),
+                        resultSet.getFloat(5),
+                        resultSet.getFloat(6),
                         resultSet.getInt(7),
                         resultSet.getString(8)
                 ));
             }
             resultado.setCode(200);
-            resultado.setMessage("El legajo registra recibos de sueldos.");
-            resultado.resultado = results;
+            resultado.setMessage(results.isEmpty() ? "El legajo no registra recibos de sueldos." : "El legajo registra recibos de sueldos.");
+            resultado.setResultado(results);
 
             pst.close();
             mySqlConn.close();

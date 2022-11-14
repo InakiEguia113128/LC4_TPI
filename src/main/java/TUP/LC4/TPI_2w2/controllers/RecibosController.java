@@ -80,7 +80,7 @@ public class RecibosController {
 
     @GetMapping("/getDtoListadoReciboSueldosPorAnioMes")
     public ResponseEntity<ResultadoBase> getDtoListadoReciboSueldosPorAnioMes(@RequestBody RequestListadoRecibosSueldoPorPeriodo dto) {
-        var resultado = reciboRepo.GetDtoListadoReciboSueldosPorAnio(dto.getMes_recibo(), dto.getAnio_recibo());
+        var resultado = reciboRepo.GetDtoListadoReciboSueldosPorAnio(dto.getAnio_recibo(), dto.getMes_recibo());
 
         if (resultado.code == 200) {
             return new ResponseEntity(resultado, HttpStatus.OK);

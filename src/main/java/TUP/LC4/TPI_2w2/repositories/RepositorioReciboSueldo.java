@@ -8,7 +8,6 @@ import TPU.LC4.TPI_2w2.dto.DTOEmpleado;
 import TPU.LC4.TPI_2w2.dto.DTOListadoReciboSueldosPorLegajo;
 import TPU.LC4.TPI_2w2.dto.DTOListadoReciboSueldosPorAnioMes;
 import TUP.LC4.TPI_2w2.commands.PostReciboSueldo;
-import TUP.LC4.TPI_2w2.models.Empleado;
 import TUP.LC4.TPI_2w2.models.Recibo;
 import TUP.LC4.TPI_2w2.resultados.ResultadoBase;
 import java.sql.Connection;
@@ -21,7 +20,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.TimeZone;
 import org.springframework.stereotype.Repository;
 
@@ -71,11 +69,11 @@ public class RepositorioReciboSueldo {
 
             if (recibo == null) {
                 resultado.setCode(200);
-                resultado.setMessage("Recibo de sueldo no existente para esta fecha y legajo!.");
+                resultado.setMessage(String.format("Recibo de sueldo no existente para esta fecha %s y legajo %s!.", legajo, fecha));
                 resultado.setResultado(recibo);
             } else {
                 resultado.setCode(400);
-                resultado.setMessage("Recibo de sueldo existente para esta fecha y legajo!.");
+                resultado.setMessage(String.format("Recibo de sueldo no existente para esta fecha %s y legajo %s!.", legajo, fecha));
                 resultado.setResultado(recibo);
             }
         } catch (SQLException | ParseException ex) {
@@ -134,14 +132,14 @@ public class RepositorioReciboSueldo {
             mySqlConn = DriverManager.getConnection(url, "springboot123", "UtnFrc2022");
 
             PreparedStatement prst = mySqlConn.prepareStatement("SELECT e.legajo as legajo_empleado, \n"
-                    + "((r.sueldo_bruto + r.antiguedad) - (r.jubilacion + r.obra_social + r.fondo_alta_complejidad)) as sueldo_neto, \n"
+                    + "SUM((r.sueldo_bruto + r.antiguedad) - (r.jubilacion + r.obra_social + r.fondo_alta_complejidad)) as sueldo_neto, \n"
                     + "(r.fecha_recibo) as fecha_recibo, \n"
                     + "(r.mes) as mes_recibo, \n"
                     + "(r.anio) as año_recibo \n"
                     + "FROM recibo_sueldo r \n"
                     + "JOIN empleado e on r.id_empleado = e.id_empleado \n"
                     + "where e.legajo = ? \n"
-                    + "group by legajo_empleado, sueldo_neto, fecha_recibo, mes_recibo, año_recibo");
+                    + "group by legajo_empleado, fecha_recibo, mes_recibo, año_recibo");
 
             prst.setInt(1, legajo);
             ResultSet rs = prst.executeQuery();
@@ -160,7 +158,7 @@ public class RepositorioReciboSueldo {
             mySqlConn.close();
 
             resultado.setCode(200);
-            resultado.setMessage("Lista de resultados");
+            resultado.setMessage(recibos.isEmpty() ? String.format("No existen recibos de sueldo para el legajo ingresado: %s", legajo) : String.format("Existen recibos de sueldo para el legajo ingresado: %s", legajo));
             resultado.setResultado(recibos);
         } catch (SQLException ex) {
             resultado.setCode(500);
@@ -187,7 +185,7 @@ public class RepositorioReciboSueldo {
                     + "JOIN empleado e on r.id_empleado = e.id_empleado \n"
                     + "JOIN area a on a.id_area = e.id_area \n"
                     + "where r.mes = ? and r.anio = ? \n"
-                    + "group by area \n" 
+                    + "group by area \n"
                     + "order by sueldo_neto");
 
             prst.setInt(1, cal.get(Calendar.MONTH) + 1);
@@ -205,7 +203,7 @@ public class RepositorioReciboSueldo {
             mySqlConn.close();
 
             resultado.setCode(200);
-            resultado.setMessage("Lista de resultados");
+            resultado.setMessage(recibos.isEmpty() ? String.format("No existen recibos de sueldo para la fecha ingresada: %s", fechaRecibo) : String.format("Existen recibos de sueldo para la fecha ingresada: %s", fechaRecibo));
             resultado.setResultado(recibos);
         } catch (SQLException ex) {
             resultado.setCode(500);
@@ -215,7 +213,7 @@ public class RepositorioReciboSueldo {
 
         return resultado;
     }
-    
+
     public ResultadoBase GetDtoListadoReciboSueldosPorAnio(int anio, int mes) {
         var resultado = new ResultadoBase();
         var recibos = new ArrayList<DTOListadoReciboSueldosPorAnioMes>();
@@ -229,11 +227,11 @@ public class RepositorioReciboSueldo {
                     + "JOIN empleado e on r.id_empleado = e.id_empleado \n"
                     + "JOIN area a on a.id_area = e.id_area \n"
                     + "where r.mes = ? and r.anio = ? \n"
-                    + "group by area \n" 
+                    + "group by area \n"
                     + "order by sueldo_neto");
 
-            prst.setInt(1, anio);
-            prst.setInt(2, mes);
+            prst.setInt(1, mes);
+            prst.setInt(2, anio);
             ResultSet rs = prst.executeQuery();
 
             while (rs.next()) {
@@ -247,7 +245,7 @@ public class RepositorioReciboSueldo {
             mySqlConn.close();
 
             resultado.setCode(200);
-            resultado.setMessage("Lista de resultados");
+            resultado.setMessage(recibos.isEmpty() ? String.format("No existen recibos de sueldo para el mes %s y año %s", mes, anio) : String.format("Existen recibos de sueldo para el mes %s y año %s", mes, anio));
             resultado.setResultado(recibos);
         } catch (SQLException ex) {
             resultado.setCode(500);
